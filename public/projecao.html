@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Índice CESPU de Maturidade Docente em IA</title>
+<link rel="stylesheet" href="/css/estilo.css">
+<style>
+  .layout-projecao {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+  }
+  .layout-projecao img.logo-topo { height: 70px; margin-bottom: 28px; }
+  .layout-projecao h1 { font-size: 2.6rem; max-width: 900px; margin: 0 0 8px 0; }
+  .layout-projecao .contagem {
+    margin-top: 28px; font-size: 1.1rem; color: var(--cor-cinza);
+  }
+  .layout-projecao .contagem b { color: var(--cor-laranja); font-size: 1.6rem; }
+</style>
+</head>
+<body>
+  <div class="layout-projecao">
+    <img class="logo-topo" src="/img/logo.png" alt="Gabinete de Inovação Pedagógica CESPU">
+    <span class="tag-laranja">Gabinete de Inovação Pedagógica · CESPU</span>
+    <h1 id="tituloEvento">Índice CESPU de Maturidade Docente em Inteligência Artificial</h1>
+
+    <div class="aviso-anonimato" style="max-width:640px;">
+      Este questionário é totalmente anónimo.<br>
+      O objetivo é promover reflexão institucional e não avaliação individual.
+    </div>
+
+    <div class="qr-caixa">
+      <img id="qrImg" src="/api/qrcode.png" alt="QR Code para responder">
+    </div>
+
+    <p style="margin-top:22px; font-size:1.05rem; color: var(--cor-cinza);">
+      Aponte a câmara do seu telemóvel para o código QR para começar
+    </p>
+
+    <div class="contagem">
+      <span class="destaque-live"><span class="ponto"></span> AO VIVO</span>
+      &nbsp;·&nbsp; <b id="totalParticipantes">0</b> participante(s) já responderam
+    </div>
+  </div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/comum.js"></script>
+<script>
+  fetch('/api/config').then(r => r.json()).then(cfg => {
+    document.getElementById('tituloEvento').textContent = cfg.titulo;
+  });
+
+  const socket = io();
+  socket.on('atualizacao', (res) => {
+    document.getElementById('totalParticipantes').textContent = res.totalParticipantes;
+  });
+</script>
+</body>
+</html>
