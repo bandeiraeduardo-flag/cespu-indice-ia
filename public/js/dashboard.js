@@ -2,6 +2,25 @@ let graficoRadar, graficoNiveis;
 
 const CORES_WORDCLOUD = ["#EC671B", "#FFFFFF", "#B6B5B5", "#F2A265"];
 
+// Quebra um texto longo em várias linhas (sem cortar palavras), para uso
+// nos rótulos do radar (pointLabels aceita um array = uma linha por item).
+function quebrarRotulo(texto, maxCaracteresPorLinha = 16) {
+  const palavras = texto.split(' ');
+  const linhas = [];
+  let linhaAtual = '';
+  palavras.forEach(palavra => {
+    const tentativa = linhaAtual ? `${linhaAtual} ${palavra}` : palavra;
+    if (tentativa.length > maxCaracteresPorLinha && linhaAtual) {
+      linhas.push(linhaAtual);
+      linhaAtual = palavra;
+    } else {
+      linhaAtual = tentativa;
+    }
+  });
+  if (linhaAtual) linhas.push(linhaAtual);
+  return linhas;
+}
+
 function inicializarGraficos() {
   const ctxRadar = document.getElementById('graficoRadar').getContext('2d');
   graficoRadar = new Chart(ctxRadar, {
@@ -18,12 +37,19 @@ function inicializarGraficos() {
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: 12 },
       scales: {
         r: {
           min: 0, max: 5,
           angleLines: { color: 'rgba(255,255,255,0.1)' },
           grid: { color: 'rgba(255,255,255,0.1)' },
-          pointLabels: { color: '#FFFFFF', font: { size: 11 } },
+          pointLabels: {
+            color: '#FFFFFF',
+            font: { size: 11 },
+            padding: 10,
+            callback: (label) => quebrarRotulo(label, 16)
+          },
           ticks: { color: '#B6B5B5', backdropColor: 'transparent', stepSize: 1 }
         }
       },
